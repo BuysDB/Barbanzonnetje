@@ -34,7 +34,7 @@ class MICS():
         return results
 
     def get_full_scale_range(self, gain):
-        return self.vdd*(1/effective_gain)  #This is the range we map the signal to [0, VDD*gain]
+        return self.vdd*(1/gain)  #This is the range we map the signal to [0, VDD*gain]
 
     def get_mv(self, raw_val, gain):
 
