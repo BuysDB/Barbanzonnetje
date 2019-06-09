@@ -5,9 +5,9 @@ import Adafruit_ADS1x15
 from mics import MICS
 from mcp230xx import MCP230XX
 import serial
-import SHT31_Array
+import SHT31array
 
-sht_array = SHT31_Array.SHT31_Array(TCA9548A_address=0x70, N_SHTs =8)
+sht_array = SHT31array.SHT31_Array(TCA9548A_address=0x70, N_SHTs =8)
 
 adc = Adafruit_ADS1x15.ADS1115()
 mics = MICS(adc, 0, 1)
