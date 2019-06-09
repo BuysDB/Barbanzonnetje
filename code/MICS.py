@@ -64,9 +64,10 @@ class MICS():
                 result_dict = {gain:result}
             else:
                 result_dict[gain] = result
-            expected_next_adc_readout =  (result/gain)*next_gain
-            if expected_next_adc_readout > self.max_adc_readout*0.95:
-                break
+            if next_gain is not None:
+                expected_next_adc_readout =  (result/gain)*next_gain
+                if expected_next_adc_readout > self.max_adc_readout*0.95:
+                    break
         return result_dict
 
 # Create an ADS1115 ADC (16-bit) instance.
