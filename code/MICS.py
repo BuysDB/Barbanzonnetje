@@ -72,8 +72,11 @@ class MICS():
 # Create an ADS1115 ADC (16-bit) instance.
 adc = Adafruit_ADS1x15.ADS1115()
 mics = MICS(adc, 0, 1)
+mics2 = MICS(adc, 2, 3)
 
 while True:
     values = mics.aquire_mv()
-    print( '%s\t%s' %  tuple(values[x] for x in ['red','ox']) )
+    print( '%s\t%s' %  tuple(values[x] for x in ['red','ox']), end='' )
+    values2 = mics2.aquire_mv()
+    print( '\t%s\t%s' %  tuple(values[x] for x in ['red','ox']) )
     time.sleep(0.5)
