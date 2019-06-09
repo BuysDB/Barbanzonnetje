@@ -74,5 +74,6 @@ adc = Adafruit_ADS1x15.ADS1115()
 mics = MICS(adc, 0, 1)
 
 while True:
-    print( mics.aquire_mv() )
+    values = mics.aquire_mv()
+    print( '%s\t%s' %  (values[x] for x in ['red','ox']) )
     time.sleep(0.5)
