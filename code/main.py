@@ -32,6 +32,6 @@ while True:
     values2 = mics2.aquire_mv()
     print( '\t%s\t%s\t' %  tuple(values2[x] for x in ['red','ox']), end='' )
 
-    print('\t'.join( [str(x) for x in sht_array.read_all_temperature_humidity()]))
+    print('\t'.join( ['%.3f\t%.3f'%x for x in sht_array.read_all_temperature_humidity()]))
 
     time.sleep(0.5)
