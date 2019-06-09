@@ -37,9 +37,10 @@ class MICS():
         return self.vdd*(1/gain)  #This is the range we map the signal to [0, VDD*gain]
 
     def get_mv(self, raw_val, gain):
-
+                           #1234567890123456
         sign =  raw_val & 0b0000000000000001
         nosignval = set_bit(raw_val, 15, 0)
+        print(str(bin(sign)))
         LSBuV = nosignval * (self.get_full_scale_range(gain) / (32767.0/1000.0));
         return LSBuV*(-1 if sign else 1)
 
