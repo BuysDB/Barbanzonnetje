@@ -20,7 +20,7 @@ for i in range(4):
 
 
 
-def change_serial_channel(channel=0, serial_mcp):
+def change_serial_channel(serial_mcp, channel=0):
     serial_mcp.output(0, (channel&0b0001) > 0)
     serial_mcp.output(1, (channel&0b0010) > 0)
     serial_mcp.output(2, (channel&0b0100) > 0)
