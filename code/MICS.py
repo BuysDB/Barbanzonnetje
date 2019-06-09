@@ -38,9 +38,9 @@ class MICS():
 
     def get_mv(self, raw_val, gain):
                            #1234567890123456
-        sign =  raw_val & 0b0000000000000001
+        sign =  raw_val & 0b1000000000000000
         nosignval = set_bit(raw_val, 15, 0)
-        print(str(bin(raw_val)))
+        #print(str(bin(raw_val)))
         LSBuV = nosignval * (self.get_full_scale_range(gain) / (32767.0/1000.0));
         return LSBuV*(-1 if sign else 1)
 
