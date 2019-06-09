@@ -47,7 +47,7 @@ class MICS():
         results = {}
         for sensor_name, port in self.ports.items():
             if port is not None:
-                for gain, raw_val in  self._aquire_gain_inc(port,max_only=True):
+                for gain, raw_val in  self._aquire_gain_inc(port,max_only=True).items():
                       results[sensor_name] = self.get_mv(raw_val, gain)
 
 
