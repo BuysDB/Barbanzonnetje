@@ -78,5 +78,5 @@ while True:
     values = mics.aquire_mv()
     print( '%s\t%s' %  tuple(values[x] for x in ['red','ox']), end='' )
     values2 = mics2.aquire_mv()
-    print( '\t%s\t%s' %  tuple(values[x] for x in ['red','ox']) )
+    print( '\t%s\t%s' %  tuple(values2[x] for x in ['red','ox']) )
     time.sleep(0.5)
