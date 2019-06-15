@@ -35,3 +35,4 @@ while True:
     print('\t'.join( ['%.3f\t%.3f'%x for x in sht_array.read_all_temperature_humidity()]))
 
     time.sleep(0.5)
+#WhyBlockMyBrowserSlack?

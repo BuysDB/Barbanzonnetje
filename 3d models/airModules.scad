@@ -341,6 +341,156 @@ module BME_680TOP(){
 
 
 
+
+/*
+Reqs:
+fixed m3 hole distance
+4 fixed m3 holes
+spacing for generic electric adapter
+mounting holes for pcb, distance between pcb pins is cl = 2.54;
+module connector height is 2.8mm
+m3 screw sinc W
+
+*/
+module MICS4514_V2(top=0){
+    electrical_connector_height = 8.5; 
+    electrical_socket_height = 3;
+    generic_x_dimension = 24; //maximum board size of generic adapter plane
+    generic_y_dimension = 26;
+    generic_wall_thickness = 3.5;// Wall thickness given maximum sized board
+    generic_top_height = 3 + generic_wall_thickness;
+    generic_first_layer_height = electrical_connector_height + electrical_socket_height;
+    
+    
+    board_thickness = 1.55;
+    board_x_dimension = 15.5;
+    board_y_dimension = 22.5; 
+    board_pin_y_dimension = 2.7;
+    board_pin_x_dimension = 13 + 1.5; //Add some slack for connector
+    board_pre_pin_y_dim = 2.5; //distance between pins and components on board
+    
+    screw_hole_radius = 1.6;
+    nut_diameter = 5.8 + 1;
+    nut_depth = 3;
+    screw_top_radius = 3;
+    screw_top_depth = 2;
+    rounded_radius = 1.5;
+    
+    //We center everything on the x axis!
+    
+    
+    // draw board for reference:
+    //translate([-board_x_dimension*0.5,0,0])color([0,0.5,0])cube([board_x_dimension,board_y_dimension,board_thickness]);
+    if(!top){
+    difference(){
+        union(){
+            // Create generic mount box:
+            difference(){
+                minkowski(){
+            translate([-generic_x_dimension*0.5-generic_wall_thickness+rounded_radius,-generic_wall_thickness+rounded_radius,0])cube([generic_x_dimension+2*generic_wall_thickness-2*rounded_radius,generic_y_dimension+2*generic_wall_thickness-rounded_radius*2,board_thickness-rounded_radius]);
+                    cylinder(r=rounded_radius);
+                }
+            
+                //remove board
+            translate([-board_x_dimension*0.5,-0.5,0])color([0,0.5,0])cube([board_x_dimension,board_y_dimension,board_thickness]);
+                
+                       // Cut out an opening for the connector:
+                 translate([-board_pin_x_dimension *0.5,0,-generic_first_layer_height-10])cube([board_pin_x_dimension,board_pin_y_dimension,generic_first_layer_height*3]);
+                
+            }
+            
+            // Create generic mount box below
+            difference(){
+                // generic mount box:
+                   minkowski(){
+                        translate([-generic_x_dimension*0.5-generic_wall_thickness+rounded_radius,-generic_wall_thickness+rounded_radius,-generic_first_layer_height])cube([generic_x_dimension+2*generic_wall_thickness-2*rounded_radius,generic_y_dimension+2*generic_wall_thickness-2*rounded_radius,generic_first_layer_height]);
+                       cylinder(r=rounded_radius,h=0.01);
+                   }
+                       
+                
+                
+                // Cut out an opening for the connector:
+                 translate([-board_pin_x_dimension *0.5,0,-generic_first_layer_height])cube([board_pin_x_dimension,board_pin_y_dimension,generic_first_layer_height+10]);
+            }
+                
+        }
+        // cull pins
+        
+        translate([-generic_x_dimension*0.5,0,-100])cylinder(r=screw_hole_radius,h=500);
+        
+        //Cutout for nut:
+        translate([-generic_x_dimension*0.5,0,-generic_first_layer_height])cylinder(r=nut_diameter/2,h=nut_depth, $fn=6);
+        
+        
+        translate([generic_x_dimension*0.5,0,-100])cylinder(r=screw_hole_radius,h=500);
+        //Cutout for nut:
+        translate([generic_x_dimension*0.5,0,-generic_first_layer_height])cylinder(r=nut_diameter/2,h=nut_depth, $fn=6);
+        
+        
+        translate([-generic_x_dimension*0.5,generic_y_dimension,-100])cylinder(r=screw_hole_radius,h=500);
+        //Cutout for nut:
+        translate([-generic_x_dimension*0.5,generic_y_dimension,-generic_first_layer_height])cylinder(r=nut_diameter/2,h=nut_depth, $fn=6);
+        
+        
+        translate([generic_x_dimension*0.5,generic_y_dimension,-100])cylinder(r=screw_hole_radius,h=500);
+        //Cutout for nut:
+        translate([generic_x_dimension*0.5,generic_y_dimension,-generic_first_layer_height])cylinder(r=nut_diameter/2,h=nut_depth, $fn=6);
+        
+        
+    }
+}
+    //Top:
+    if(top){
+    offset = 8;
+
+    difference(){
+        minkowski(){
+         translate([-generic_x_dimension*0.5-generic_wall_thickness+rounded_radius,-generic_wall_thickness+rounded_radius,0])cube([generic_x_dimension+2*generic_wall_thickness - 2*rounded_radius,generic_y_dimension+2*generic_wall_thickness-2*rounded_radius,generic_top_height]) ;
+            sphere(r=rounded_radius);
+        }
+         
+    translate([-offset,generic_y_dimension*0.5,0])rotate([180,0,0])Nozzle(nozzleOuterRadius,nozzleWallThickness,nozzleTeethHeight,nozzleLength,inner=1);
+    translate([offset,generic_y_dimension*0.5,0])rotate([180,0,0])Nozzle(nozzleOuterRadius,nozzleWallThickness,nozzleTeethHeight,nozzleLength,inner=1);
+        
+    //PIN holes:
+        translate([-generic_x_dimension*0.5,0,-100])cylinder(r=screw_hole_radius,h=500);
+        translate([generic_x_dimension*0.5,0,-100])cylinder(r=screw_hole_radius,h=500);
+        translate([-generic_x_dimension*0.5,generic_y_dimension,-100])cylinder(r=screw_hole_radius,h=500);
+        translate([generic_x_dimension*0.5,generic_y_dimension,-100])cylinder(r=screw_hole_radius,h=500);
+    
+        
+        
+        translate([-generic_x_dimension*0.5,0,generic_top_height])cylinder(r=screw_top_radius,h=screw_top_depth);
+        translate([generic_x_dimension*0.5,0,generic_top_height])cylinder(r=screw_top_radius,h=screw_top_depth);
+        translate([-generic_x_dimension*0.5,generic_y_dimension,generic_top_height])cylinder(r=screw_top_radius,h=screw_top_depth);
+        translate([generic_x_dimension*0.5,generic_y_dimension,generic_top_height])cylinder(r=screw_top_radius,h=screw_top_depth);
+    
+        
+        //Remove inside
+        translate([-generic_x_dimension*0.5,0,-5])cube([generic_x_dimension+2,generic_y_dimension,generic_first_layer_height]);
+        //Remove bottom:
+        
+        translate([-generic_x_dimension*0.5-generic_wall_thickness,-generic_wall_thickness,-generic_first_layer_height])cube([generic_x_dimension+2*generic_wall_thickness,generic_y_dimension+2*generic_wall_thickness,generic_first_layer_height]);
+        
+    }
+    
+    
+    
+    
+    
+    
+     translate([-offset,generic_y_dimension*0.5,generic_top_height])rotate([180,0,0])Nozzle(nozzleOuterRadius,nozzleWallThickness,nozzleTeethHeight,nozzleLength);
+    translate([offset,generic_y_dimension*0.5,generic_top_height])rotate([180,0,0])Nozzle(nozzleOuterRadius,nozzleWallThickness,nozzleTeethHeight,nozzleLength);
+    
+
+
+}
+    
+
+}
+
+MICS4514_V2(top=0);
+//MICS4514_V2(top=1);
 //BME680_BOTTOM();
 //BME_680TOP();
 //CJMCU4541_TOP();
