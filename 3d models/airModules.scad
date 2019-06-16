@@ -352,12 +352,14 @@ module connector height is 2.8mm
 m3 screw sinc W
 
 */
-module MICS4514_V2(top=0){
+module MICS4514_V2(top=0,generic_wall_thickness = 4.0,generic_x_dimension = 24,g_y_dimension = 26, module_multiplier_y=1){
+    
+    generic_y_dimension = g_y_dimension*module_multiplier_y;
     electrical_connector_height = 8.5; 
     electrical_socket_height = 3;
-    generic_x_dimension = 24; //maximum board size of generic adapter plane
-    generic_y_dimension = 26;
-    generic_wall_thickness = 3.5;// Wall thickness given maximum sized board
+     //maximum board size of generic adapter plane
+    
+    // Wall thickness given maximum sized board
     generic_top_height = 3 + generic_wall_thickness;
     generic_first_layer_height = electrical_connector_height + electrical_socket_height;
     
@@ -387,8 +389,8 @@ module MICS4514_V2(top=0){
             // Create generic mount box:
             difference(){
                 minkowski(){
-            translate([-generic_x_dimension*0.5-generic_wall_thickness+rounded_radius,-generic_wall_thickness+rounded_radius,0])cube([generic_x_dimension+2*generic_wall_thickness-2*rounded_radius,generic_y_dimension+2*generic_wall_thickness-rounded_radius*2,board_thickness-rounded_radius]);
-                    cylinder(r=rounded_radius);
+            translate([-generic_x_dimension*0.5-generic_wall_thickness+rounded_radius,-generic_wall_thickness+rounded_radius,0])cube([generic_x_dimension+2*generic_wall_thickness-2*rounded_radius,generic_y_dimension+2*generic_wall_thickness-rounded_radius*2,board_thickness-0.002]);
+                    cylinder(r=rounded_radius,h=0.001);
                 }
             
                 //remove board
@@ -441,7 +443,7 @@ module MICS4514_V2(top=0){
 }
     //Top:
     if(top){
-    offset = 8;
+    offset = 7;
 
     difference(){
         minkowski(){
@@ -467,7 +469,9 @@ module MICS4514_V2(top=0){
     
         
         //Remove inside
-        translate([-generic_x_dimension*0.5,0,-5])cube([generic_x_dimension+2,generic_y_dimension,generic_first_layer_height]);
+        wt =  generic_wall_thickness*0.6;
+        
+        translate([-generic_x_dimension*0.5 + wt,-wt,-5])cube([generic_x_dimension-wt*2,generic_y_dimension,generic_first_layer_height]);
         //Remove bottom:
         
         translate([-generic_x_dimension*0.5-generic_wall_thickness,-generic_wall_thickness,-generic_first_layer_height])cube([generic_x_dimension+2*generic_wall_thickness,generic_y_dimension+2*generic_wall_thickness,generic_first_layer_height]);
@@ -489,8 +493,8 @@ module MICS4514_V2(top=0){
 
 }
 
-MICS4514_V2(top=0);
-//MICS4514_V2(top=1);
+//MICS4514_V2(top=0);
+MICS4514_V2(top=1,module_multiplier_y=2);
 //BME680_BOTTOM();
 //BME_680TOP();
 //CJMCU4541_TOP();
