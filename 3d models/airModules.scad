@@ -352,9 +352,16 @@ module connector height is 2.8mm
 m3 screw sinc W
 
 */
-module MICS4514_V2(top=0,generic_wall_thickness = 4.0,generic_x_dimension = 24,g_y_dimension = 26, module_multiplier_y=1){
+module MICS4514_V2(top=0,generic_wall_thickness = 4.0,g_y_dimension = 26, g_x_dimension=24, module_multiplier_x=1,module_multiplier_y=1,
+        board_x_dimension = 15.5,
+    board_y_dimension = 22.5,
+    board_pin_y_dimension = 2.7,
+    board_pin_x_dimension = 13 + 1.5,
+    board_thickness = 1.55
+){
     
     generic_y_dimension = g_y_dimension*module_multiplier_y;
+    generic_x_dimension = g_x_dimension*module_multiplier_x;
     electrical_connector_height = 8.5; 
     electrical_socket_height = 3;
      //maximum board size of generic adapter plane
@@ -364,11 +371,8 @@ module MICS4514_V2(top=0,generic_wall_thickness = 4.0,generic_x_dimension = 24,g
     generic_first_layer_height = electrical_connector_height + electrical_socket_height;
     
     
-    board_thickness = 1.55;
-    board_x_dimension = 15.5;
-    board_y_dimension = 22.5; 
-    board_pin_y_dimension = 2.7;
-    board_pin_x_dimension = 13 + 1.5; //Add some slack for connector
+    
+//Add some slack for connector
     board_pre_pin_y_dim = 2.5; //distance between pins and components on board
     
     screw_hole_radius = 1.6;
@@ -382,7 +386,7 @@ module MICS4514_V2(top=0,generic_wall_thickness = 4.0,generic_x_dimension = 24,g
     
     
     // draw board for reference:
-    //translate([-board_x_dimension*0.5,0,0])color([0,0.5,0])cube([board_x_dimension,board_y_dimension,board_thickness]);
+    translate([-board_x_dimension*0.5,0,0])color([0,0.5,0])cube([board_x_dimension,board_y_dimension,board_thickness]);
     if(!top){
     difference(){
         union(){
@@ -443,7 +447,7 @@ module MICS4514_V2(top=0,generic_wall_thickness = 4.0,generic_x_dimension = 24,g
 }
     //Top:
     if(top){
-    offset = 7;
+    offset = 7*module_multiplier_x;
 
     difference(){
         minkowski(){
@@ -469,7 +473,7 @@ module MICS4514_V2(top=0,generic_wall_thickness = 4.0,generic_x_dimension = 24,g
     
         
         //Remove inside
-        wt =  generic_wall_thickness*0.6;
+        wt =  generic_wall_thickness*0.4;
         
         translate([-generic_x_dimension*0.5 + wt,-wt,-5])cube([generic_x_dimension-wt*2,generic_y_dimension,generic_first_layer_height]);
         //Remove bottom:
@@ -493,12 +497,51 @@ module MICS4514_V2(top=0,generic_wall_thickness = 4.0,generic_x_dimension = 24,g
 
 }
 
+module U_Connection(length = 17.5 ){
+    
+    difference(){
+        
+        union(){
+         translate([7,13,40])rotate([0,0,0])Nozzle(nozzleOuterRadius,nozzleWallThickness,nozzleTeethHeight,nozzleLength);
+        translate([7+length,13,40])rotate([0,0,0])Nozzle(nozzleOuterRadius,nozzleWallThickness,nozzleTeethHeight,nozzleLength);  
+    translate([7,13,40])sphere(r=nozzleOuterRadius, $fn=80);
+    translate([7+length,13,40])sphere(r=nozzleOuterRadius, $fn=80);
+            
+    translate([7,13,40])rotate([0,90,0])cylinder(h=length,r=nozzleOuterRadius);
+            
+        }
+    
+    
+        
+    translate([7,13,40])rotate([0,90,0])cylinder(h=length,r=nozzleWallInnerRadius);
+      translate([7,13,40])sphere(r=nozzleWallInnerRadius, $fn=80);
+          translate([7+length,13,40])sphere(r=nozzleWallInnerRadius, $fn=80);
+        
+        
+          translate([7,13,40])rotate([0,0,0])Nozzle(nozzleOuterRadius,nozzleWallThickness,nozzleTeethHeight,nozzleLength,inner=1);
+        translate([7+length,13,40])rotate([0,0,0])Nozzle(nozzleOuterRadius,nozzleWallThickness,nozzleTeethHeight,nozzleLength,inner=1);  
+        
+    
+        }
+    
+    
+}
+
 //MICS4514_V2(top=0);
-MICS4514_V2(top=1,module_multiplier_y=2);
+//MICS4514_V2(top=0,module_multiplier_x=1);
 //BME680_BOTTOM();
 //BME_680TOP();
 //CJMCU4541_TOP();
 //CJMCU4541_BOTTOM();
+//Module for formaldeheyde sensor:
+/*
+MICS4514_V2(top=1,module_multiplier_x=1,board_x_dimension=24.5,board_y_dimension=25.5);
+
+
+translate([32.5,0,0])MICS4514_V2(top=1,module_multiplier_x=1,board_x_dimension=24.5,board_y_dimension=25.5);
+*/
+U_Connection(length = 18.5);
+
 /*
 difference(){
     translate([-wt,-wt,0])cube([26.5+2*wt, 91+wt*2, 20]);
