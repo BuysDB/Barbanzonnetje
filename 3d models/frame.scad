@@ -135,9 +135,75 @@ translate([x_dim-(side_dim+minkradius)*2-bar_th,0,0])cube([bar_th-x_slack,bar_wi
  }
  }
  }}
- }
+}
 
-//Frame();
+
+first_layer_height = 35;
+second_layer_height = 35;
+second_layer_start = first_layer_height;
+third_layer_height = 35;
+third_layer_start = second_layer_start+second_layer_height;
+fourth_layer_height = 35;
+fourth_layer_start = third_layer_start+third_layer_height; 
+ 
+ /*
+Frame();
  Plate5();
-//
-//Flop in some M3 holes
+translate([0,0,second_layer_start])Frame();
+ translate([0,0,third_layer_start])Frame();
+translate([0,0,fourth_layer_start])Frame();
+*/
+
+
+
+vertical_wall_thickness= 4;
+vertical_hole_offset = 7;
+vertical_hole_count = 111;
+vertical_height = 120;
+
+inset = 10;
+outset = 10;
+vertical_plate_x_dim = h_dist * 2 + outset;
+vertical_plate_inset_x_dim = h_dist * 2 - inset;
+vertical_plate_inset_y_dim =vertical_height - 2*inset;
+
+total_y_offset = -l*0.5 - y_dim + 2*minkradius;
+
+
+difference(){
+    
+    minkowski(){
+    //translate([-vertical_plate_x_dim*0.5,total_y_offset-minkradius,-z_dim*0.5])cube([vertical_plate_x_dim,vertical_wall_thickness,vertical_height]);
+        translate([-vertical_plate_x_dim*0.5 + minkradius,total_y_offset+minkradius,-z_dim*0.5+minkradius])cube([vertical_plate_x_dim-minkradius*2,vertical_wall_thickness,vertical_height-minkradius*2]);
+        sphere(r=minkradius);
+        
+    }
+    translate([-vertical_plate_x_dim*0.5,total_y_offset+vertical_wall_thickness,-z_dim*0.5])cube([vertical_plate_x_dim,vertical_wall_thickness,vertical_height]);
+    
+    translate([-vertical_plate_inset_x_dim*0.5,-l*0.5 - y_dim + 2*minkradius,-z_dim*0.5 + inset])cube([vertical_plate_inset_x_dim,vertical_wall_thickness,vertical_plate_inset_y_dim]);
+    
+ 
+screw_top_radius =  6.5/2;
+for(z_offset=[0:vertical_hole_offset:vertical_hole_count]){
+
+
+    translate([0,0,z_offset]){
+     //                   translate([0,-l,0])rotate([-90,0,0])
+cylinder(h=900,r=1.6);
+        translate([0,-l,0])rotate([-90,0,0])cylinder(h=900,r=1.6);
+        
+        translate([h_dist,-l,0])rotate([-90,0,0])cylinder(h=900,r=1.6);
+        translate([-h_dist,-l,0])rotate([-90,0,0])cylinder(h=900,r=1.6);
+    }
+    
+        translate([0,0,z_offset]){
+        
+             translate([0,total_y_offset,0])rotate([-90,0,0])cylinder(h=2,r=screw_top_radius);
+            
+        translate([h_dist,total_y_offset,0])rotate([-90,0,0])cylinder(h=2,r=screw_top_radius);
+        translate([-h_dist,total_y_offset,0])rotate([-90,0,0])cylinder(h=2,r=screw_top_radius);
+    }
+    
+}
+}
+   
